@@ -13,7 +13,7 @@ Project Setup
 - Install Grunt command line interface
  - `sudo npm install -g grunt-cli`
 - Clone and cd into the repo
- - `git clone https://github.com/damassi/code-challenge.git && cd code-challenge`
+ - `git clone https://github.com/damassi/react-scaffold.git && cd react-scaffold`
 - Then install Grunt task dependencies
  - `npm install`
 
