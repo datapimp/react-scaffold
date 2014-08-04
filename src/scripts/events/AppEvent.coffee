@@ -7,7 +7,7 @@
 
 AppEvent =
 
-   INIT: 'onInit'
+  INIT: 'onInit'
 
 
 module.exports = AppEvent

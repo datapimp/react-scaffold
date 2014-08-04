@@ -14,15 +14,15 @@ AppEvent     = require './events/AppEvent.coffee'
 module.exports = App = React.createClass
 
 
-   componentDidMount: ->
-      FastClick document.body
+  componentDidMount: ->
+    FastClick document.body
 
 
 
-   render: ->
-      <div className='container'>
-         Hey!
-      </div>
+  render: ->
+    <div className='container'>
+      Hey!
+    </div>
 
 
 React.renderComponent <App />, document.getElementById 'container'

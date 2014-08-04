@@ -20,303 +20,303 @@ uglifyify      = require 'uglifyify'
 module.exports = (grunt) ->
 
 
-   # Root application path
-   basePath = '.'
+  # Root application path
+  basePath = '.'
 
-   # Directory where source files live
-   sources  = "#{basePath}/src"
+  # Directory where source files live
+  sources  = "#{basePath}/src"
 
-   # Directory where vendor files live
-   vendor   = "#{sources}/vendor"
+  # Directory where vendor files live
+  vendor   = "#{sources}/vendor"
 
-   # Path to compile to during development
-   output   = "#{basePath}/public"
+  # Path to compile to during development
+  output   = "#{basePath}/public"
 
-   # Path to build final deploy files
-   dist     = "#{basePath}/dist"
+  # Path to build final deploy files
+  dist     = "#{basePath}/dist"
 
-   # Test specs directory and html
-   test     = "#{basePath}/test"
+  # Test specs directory and html
+  test     = "#{basePath}/test"
 
-   # Browser port during development
-   port     = 3000
+  # Browser port during development
+  port     = 3000
 
 
 
 
-   grunt.initConfig
+  grunt.initConfig
 
 
-      # --------------------------------------------------------
-      # Copy Bower sources to vendor directory for concat
-      # --------------------------------------------------------
+    # --------------------------------------------------------
+    # Copy Bower sources to vendor directory for concat
+    # --------------------------------------------------------
 
 
-      'bower':
+    'bower':
 
-         vendor:
-            dest: "#{vendor}"
+      vendor:
+        dest: "#{vendor}"
 
 
 
 
-      # --------------------------------------------------------
-      # Compile JavaScript using Browserify
-      # --------------------------------------------------------
+    # --------------------------------------------------------
+    # Compile JavaScript using Browserify
+    # --------------------------------------------------------
 
 
-      'browserify':
+    'browserify':
 
-         dev:
-            src: ["#{sources}/scripts/App.cjsx"]
-            dest: "#{output}/assets/scripts/app.js"
+      dev:
+        src: ["#{sources}/scripts/App.cjsx"]
+        dest: "#{output}/assets/scripts/app.js"
 
-            options:
-               transform: [coffeeReactify]
-               debug: true
+        options:
+          transform: [coffeeReactify]
+          debug: true
 
-         test:
-            src: ["#{test}/spec-runner.coffee"]
-            dest: "#{test}/html/scripts/spec-runner.js"
+        test:
+          src: ["#{test}/spec-runner.coffee"]
+          dest: "#{test}/html/scripts/spec-runner.js"
 
-            options:
-               transform: "<%= browserify.dev.options.transform %>"
-               debug: "<%= browserify.dev.options.debug %>"
+          options:
+            transform: "<%= browserify.dev.options.transform %>"
+            debug: "<%= browserify.dev.options.debug %>"
 
-         dist:
-            src: "<%= browserify.dev.src %>"
-            dest: "<%= browserify.dev.dest %>"
+        dist:
+          src: "<%= browserify.dev.src %>"
+          dest: "<%= browserify.dev.dest %>"
 
-            options:
-               transform: [coffeeReactify, uglifyify]
-               debug: false
+          options:
+            transform: [coffeeReactify, uglifyify]
+            debug: false
 
 
 
 
-      # --------------------------------------------------------
-      # Lint CoffeeScript files within sources and test
-      # --------------------------------------------------------
+    # --------------------------------------------------------
+    # Lint CoffeeScript files within sources and test
+    # --------------------------------------------------------
 
 
-      'coffeelint':
+    'coffeelint':
 
-         test: [
-            "#{sources}/**/*.coffee"
-            "#{test}/**/*.coffee"
-         ]
+      test: [
+        "#{sources}/**/*.coffee"
+        "#{test}/**/*.coffee"
+      ]
 
 
 
 
-      # --------------------------------------------------------
-      # Concatinate Bower Vendor files copied from `grunt bower`
-      # --------------------------------------------------------
+    # --------------------------------------------------------
+    # Concatinate Bower Vendor files copied from `grunt bower`
+    # --------------------------------------------------------
 
 
-      'concat':
+    'concat':
 
-         options:
-            separator: ';'
+      options:
+        separator: ';'
 
-         vendor:
-            src: [
-               "#{vendor}/lodash.js"
-               "#{vendor}/react-with-addons.js"
-            ]
+      vendor:
+        src: [
+          "#{vendor}/lodash.js"
+          "#{vendor}/react-with-addons.js"
+        ]
 
-            dest: "#{output}/assets/scripts/vendor.js"
+        dest: "#{output}/assets/scripts/vendor.js"
 
 
 
 
-      # --------------------------------------------------------
-      # Create server @ localhost:port and ip:port
-      # --------------------------------------------------------
+    # --------------------------------------------------------
+    # Create server @ localhost:port and ip:port
+    # --------------------------------------------------------
 
 
-      'connect':
+    'connect':
 
-         dev:
-            options:
-               hostname: null
-               port: "#{port}"
-               base: "#{output}"
-               livereload: true
-               open: "http://localhost:#{port}"
+      dev:
+        options:
+          hostname: null
+          port: "#{port}"
+          base: "#{output}"
+          livereload: true
+          open: "http://localhost:#{port}"
 
-         test:
-            options:
-               hostname: null
-               port: 3001
-               base: "#{basePath}"
-               livereload: true
-               open: 'http://localhost:3002/test/html'
-
-
-
-
-
-      # --------------------------------------------------------
-      # Copy assets {images|sound|etc} to output directory
-      # --------------------------------------------------------
-
-
-      'copy':
-
-         assets:
-            files: [{
-               expand: true
-               cwd: "#{sources}/assets"
-               src: ['**']
-               dest: "#{output}/assets"
-            }]
-
-         html:
-            files: [{
-               expand: true
-               cwd: "#{sources}/html"
-               src: ['**']
-               dest: "#{output}"
-            }]
-
-         dist:
-            files: [{
-               expand: true
-               cwd: "#{output}"
-               src:['**']
-               dest: "#{dist}"
-            }]
-
-
-
-
-      # --------------------------------------------------------
-      # Clean working development directory
-      # --------------------------------------------------------
-
-
-      'clean':
-
-         dev:
-            files: [{
-               expand: true
-               cwd: "#{output}"
-               src: ['**']
-            }]
-
-         dist:
-            files: [{
-               expand: true
-               cwd: "#{dist}"
-               src: ['**']
-            }]
-
-
-
-
-      # --------------------------------------------------------
-      # Optimize images using ImageMin
-      # --------------------------------------------------------
-
-
-      'imagemin':
-
-         dist:
-            options:
-               pngquant: true
-               optimizationLevel: 5
-
-            files: [{
-               expand: true
-               cwd: "#{output}/assets/images/"
-               src: ['**/*.{png,jpg,gif}']
-               dest: "#{output}/assets/images/"
-            }]
-
-
-
-
-      # --------------------------------------------------------
-      # Compile SASS source files
-      # --------------------------------------------------------
-
-
-      'sass':
-
-         dev:
-            options:
-               style: "expanded"
-
-            files: [{
-               src: ["#{sources}/styles/main.sass"]
-               dest: "#{output}/assets/styles/app.css"
-            }]
-
-         dist:
-            options:
-               style: "compressed"
-
-            files: [{
-               src: "#{sources}/styles/main.sass"
-               dest: "#{output}/assets/styles/app.css"
-            }]
-
-
-
-
-      # --------------------------------------------------------
-      # Watch files for changes and trigger appropriate tasks
-      # --------------------------------------------------------
-
-
-      'watch':
-
-         options:
+        test:
+          options:
+            hostname: null
+            port: 3001
+            base: "#{basePath}"
             livereload: true
-            spawn: false
-
-         assets:
-            files: "#{sources}/assets/**/*.*"
-            tasks: ['copy:assets']
-
-         html:
-            files: "#{sources}/html/**/*.*"
-            tasks: ['copy:html']
-
-         scripts:
-            files: "#{sources}/scripts/**/*.{js,coffee,cjsx,hbs}"
-            tasks: ['browserify:dev']
-
-         styles:
-            files: "#{sources}/styles/**/*.{scss,sass}"
-            tasks: ['sass:dev']
-
-         test:
-           files: [ 'test/**/*.*' ]
-           tasks: [ 'compile-tests' ]
-
-         vendor:
-            files: "#{vendor}/**/*.js"
-            tasks: ['concat:vendor']
+            open: 'http://localhost:3002/test/html'
 
 
 
 
-      # --------------------------------------------------------
-      # Uglify vendor file
-      # --------------------------------------------------------
+
+    # --------------------------------------------------------
+    # Copy assets {images|sound|etc} to output directory
+    # --------------------------------------------------------
 
 
-      'uglify':
+    'copy':
 
-         source:
-            src: "#{output}/assets/scripts/app.js"
-            dest: "#{output}/assets/scripts/app.js"
+      assets:
+        files: [{
+          expand: true
+          cwd: "#{sources}/assets"
+          src: ['**']
+          dest: "#{output}/assets"
+        }]
 
-         vendor:
-            src: "#{output}/assets/scripts/vendor.js"
-            dest: "#{output}/assets/scripts/vendor.js"
+        html:
+          files: [{
+            expand: true
+            cwd: "#{sources}/html"
+            src: ['**']
+            dest: "#{output}"
+          }]
+
+        dist:
+          files: [{
+            expand: true
+            cwd: "#{output}"
+            src:['**']
+            dest: "#{dist}"
+          }]
+
+
+
+
+    # --------------------------------------------------------
+    # Clean working development directory
+    # --------------------------------------------------------
+
+
+    'clean':
+
+      dev:
+        files: [{
+          expand: true
+          cwd: "#{output}"
+          src: ['**']
+        }]
+
+        dist:
+          files: [{
+            expand: true
+            cwd: "#{dist}"
+            src: ['**']
+          }]
+
+
+
+
+    # --------------------------------------------------------
+    # Optimize images using ImageMin
+    # --------------------------------------------------------
+
+
+    'imagemin':
+
+      dist:
+        options:
+          pngquant: true
+          optimizationLevel: 5
+
+        files: [{
+          expand: true
+          cwd: "#{output}/assets/images/"
+          src: ['**/*.{png,jpg,gif}']
+          dest: "#{output}/assets/images/"
+        }]
+
+
+
+
+    # --------------------------------------------------------
+    # Compile SASS source files
+    # --------------------------------------------------------
+
+
+    'sass':
+
+      dev:
+        options:
+          style: "expanded"
+
+        files: [{
+          src: ["#{sources}/styles/main.sass"]
+          dest: "#{output}/assets/styles/app.css"
+        }]
+
+        dist:
+          options:
+            style: "compressed"
+
+          files: [{
+            src: "#{sources}/styles/main.sass"
+            dest: "#{output}/assets/styles/app.css"
+          }]
+
+
+
+
+    # --------------------------------------------------------
+    # Watch files for changes and trigger appropriate tasks
+    # --------------------------------------------------------
+
+
+    'watch':
+
+      options:
+        livereload: true
+        spawn: false
+
+      assets:
+        files: "#{sources}/assets/**/*.*"
+        tasks: ['copy:assets']
+
+      html:
+        files: "#{sources}/html/**/*.*"
+        tasks: ['copy:html']
+
+      scripts:
+        files: "#{sources}/scripts/**/*.{js,coffee,cjsx,hbs}"
+        tasks: ['browserify:dev']
+
+      styles:
+        files: "#{sources}/styles/**/*.{scss,sass}"
+        tasks: ['sass:dev']
+
+      test:
+       files: [ 'test/**/*.*' ]
+       tasks: [ 'compile-tests' ]
+
+      vendor:
+        files: "#{vendor}/**/*.js"
+        tasks: ['concat:vendor']
+
+
+
+
+    # --------------------------------------------------------
+    # Uglify vendor file
+    # --------------------------------------------------------
+
+
+    'uglify':
+
+      source:
+        src: "#{output}/assets/scripts/app.js"
+        dest: "#{output}/assets/scripts/app.js"
+
+      vendor:
+        src: "#{output}/assets/scripts/vendor.js"
+        dest: "#{output}/assets/scripts/vendor.js"
 
 
 
@@ -324,62 +324,62 @@ module.exports = (grunt) ->
 
 
 
-   grunt.registerTask 'dev', [
-      'clean:dev'
-      'copy:assets'
-      'copy:html'
-      'browserify:dev'
-      'sass:dev'
-      'bower:vendor'
-      'concat:vendor'
-      'connect:dev'
-      'watch'
-   ]
+  grunt.registerTask 'dev', [
+    'clean:dev'
+    'copy:assets'
+    'copy:html'
+    'browserify:dev'
+    'sass:dev'
+    'bower:vendor'
+    'concat:vendor'
+    'connect:dev'
+    'watch'
+  ]
 
 
-   grunt.registerTask 'build', [
-      'clean:dev'
-      'clean:dist'
-      'copy:assets'
-      'copy:html'
-      'browserify:dist'
-      'sass:dist'
-      'bower:vendor'
-      'concat:vendor'
-      'uglify'
-      'imagemin'
-      'copy:dist'
-      'clean:dev'
-   ]
+  grunt.registerTask 'build', [
+    'clean:dev'
+    'clean:dist'
+    'copy:assets'
+    'copy:html'
+    'browserify:dist'
+    'sass:dist'
+    'bower:vendor'
+    'concat:vendor'
+    'uglify'
+    'imagemin'
+    'copy:dist'
+    'clean:dev'
+  ]
 
 
-   grunt.registerTask 'compile-tests', [
-      'browserify:dev'
-      'browserify:test'
-      'concat:vendor'
-   ]
+  grunt.registerTask 'compile-tests', [
+    'browserify:dev'
+    'browserify:test'
+    'concat:vendor'
+  ]
 
 
-   grunt.registerTask 'test', [
-      'compile-tests'
-      'connect:test'
-      'watch:test'
-   ]
+  grunt.registerTask 'test', [
+    'compile-tests'
+    'connect:test'
+    'watch:test'
+  ]
 
 
-   grunt.registerTask 'default', ['dev']
+  grunt.registerTask 'default', ['dev']
 
 
-   # + ----------------------------------------------------------
+  # + ----------------------------------------------------------
 
 
-   # Load grunt dependencies based upon package.json
-   require('load-grunt-tasks')(grunt)
+  # Load grunt dependencies based upon package.json
+  require('load-grunt-tasks')(grunt)
 
-   # Print stack traces on error
-   grunt.option 'stack', true
+  # Print stack traces on error
+  grunt.option 'stack', true
 
-   # Continue running grunt on error
-   grunt.option 'force', true
+  # Continue running grunt on error
+  grunt.option 'force', true
 
 
