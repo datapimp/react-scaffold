@@ -75,21 +75,21 @@ module.exports = (grunt) ->
           transform: [coffeeReactify]
           debug: true
 
-        test:
-          src: ["#{test}/spec-runner.coffee"]
-          dest: "#{test}/html/scripts/spec-runner.js"
+      test:
+        src: ["#{test}/spec-runner.coffee"]
+        dest: "#{test}/html/scripts/spec-runner.js"
 
-          options:
-            transform: "<%= browserify.dev.options.transform %>"
-            debug: "<%= browserify.dev.options.debug %>"
+        options:
+          transform: "<%= browserify.dev.options.transform %>"
+          debug: "<%= browserify.dev.options.debug %>"
 
-        dist:
-          src: "<%= browserify.dev.src %>"
-          dest: "<%= browserify.dev.dest %>"
+      dist:
+        src: "<%= browserify.dev.src %>"
+        dest: "<%= browserify.dev.dest %>"
 
-          options:
-            transform: [coffeeReactify, uglifyify]
-            debug: false
+        options:
+          transform: [coffeeReactify, uglifyify]
+          debug: false
 
 
 
@@ -145,13 +145,13 @@ module.exports = (grunt) ->
           livereload: true
           open: "http://localhost:#{port}"
 
-        test:
-          options:
-            hostname: null
-            port: 3001
-            base: "#{basePath}"
-            livereload: true
-            open: 'http://localhost:3002/test/html'
+      test:
+        options:
+          hostname: null
+          port: 3001
+          base: "#{basePath}"
+          livereload: true
+          open: 'http://localhost:3002/test/html'
 
 
 
@@ -160,7 +160,6 @@ module.exports = (grunt) ->
     # --------------------------------------------------------
     # Copy assets {images|sound|etc} to output directory
     # --------------------------------------------------------
-
 
     'copy':
 
@@ -172,21 +171,21 @@ module.exports = (grunt) ->
           dest: "#{output}/assets"
         }]
 
-        html:
-          files: [{
-            expand: true
-            cwd: "#{sources}/html"
-            src: ['**']
-            dest: "#{output}"
-          }]
+      html:
+        files: [{
+          expand: true
+          cwd: "#{sources}/html"
+          src: ['**']
+          dest: "#{output}"
+        }]
 
-        dist:
-          files: [{
-            expand: true
-            cwd: "#{output}"
-            src:['**']
-            dest: "#{dist}"
-          }]
+      dist:
+        files: [{
+          expand: true
+          cwd: "#{output}"
+          src:['**']
+          dest: "#{dist}"
+        }]
 
 
 
@@ -205,12 +204,12 @@ module.exports = (grunt) ->
           src: ['**']
         }]
 
-        dist:
-          files: [{
-            expand: true
-            cwd: "#{dist}"
-            src: ['**']
-          }]
+      dist:
+        files: [{
+          expand: true
+          cwd: "#{dist}"
+          src: ['**']
+        }]
 
 
 
@@ -233,8 +232,6 @@ module.exports = (grunt) ->
           src: ['**/*.{png,jpg,gif}']
           dest: "#{output}/assets/images/"
         }]
-
-
 
 
     # --------------------------------------------------------
